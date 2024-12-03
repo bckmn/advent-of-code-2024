@@ -9,8 +9,8 @@ pub fn main() {
   let lines = load_lines_from("./src/input.txt")
   let lists = list.fold(lines, #([], []), split_line)
 
-  list.map2(lists.0, lists.1, with: fn(first, second) {
-    int.absolute_value(first - second)
+  list.map(lists.0, with: fn(first) {
+    first * list.count(lists.1, fn(number) { number == first })
   })
   |> int.sum
   |> int.to_string
