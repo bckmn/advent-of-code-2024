@@ -9,10 +9,31 @@ pub fn main() {
   let reports = list.fold(lines, [], split_line)
 
   reports
-  |> list.filter(is_valid_report)
+  |> list.filter(is_safe_report_with_dampener)
   |> list.length
   |> int.to_string
   |> io.println
+}
+
+fn is_safe_report_with_dampener(report: List(Int)) -> Bool {
+  case is_valid_report(report) {
+    True -> True
+    False -> {
+      list.range(0, list.length(report) - 1)
+      |> list.any(fn(i) {
+        remove_at(report, i)
+        |> is_valid_report
+      })
+    }
+  }
+}
+
+fn remove_at(list: List(a), index: Int) -> List(a) {
+  case list, index {
+    [], _ -> []
+    [_x, ..xs], 0 -> xs
+    [x, ..xs], i -> [x, ..remove_at(xs, i - 1)]
+  }
 }
 
 fn is_valid_report(report: List(Int)) -> Bool {
